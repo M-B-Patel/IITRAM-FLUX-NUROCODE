@@ -1,0 +1,138 @@
+/* General Styles */
+body {
+    font-family: Arial, sans-serif;
+    background-color: #0A1A2F; /* Deep Navy */
+    color: #F5F5F5; /* Soft White */
+    margin: 0;
+    padding: 0;
+    line-height: 1.6;
+  }
+  
+  header {
+    text-align: center;
+    padding: 20px;
+    background-color: #1E1E1E; /* Charcoal Gray */
+  }
+  
+  header h1 {
+    margin: 0;
+    font-size: 2rem;
+  }
+  
+  header p {
+    margin: 5px 0 0;
+    color: #CCCCCC; /* Light Gray */
+  }
+  
+  main {
+    padding: 20px;
+  }
+  
+  /* SOS Button */
+  .sos-section {
+    text-align: center;
+    margin-bottom: 30px;
+  }
+  
+  .sos-button {
+    background-color: #FF6B6B; /* Coral Red */
+    color: #F5F5F5;
+    border: none;
+    padding: 15px 30px;
+    font-size: 1.2rem;
+    border-radius: 50%;
+    cursor: pointer;
+    width: 100px;
+    height: 100px;
+    box-shadow: 0 4px 6px rgba(0, 0, 0, 0.3);
+  }
+  
+  .sos-button:hover {
+    background-color: #e55a5a;
+  }
+  
+  /* Map Section */
+  .map-section {
+    margin-bottom: 30px;
+  }
+  
+  #map {
+    height: 300px;
+    border-radius: 10px;
+    overflow: hidden;
+  }
+  
+  .marker {
+    width: 20px;
+    height: 20px;
+    border-radius: 50%;
+    background-size: cover;
+  }
+  
+  .marker.mechanic {
+    background-color: #2EBAC1; /* Teal */
+  }
+  
+  .marker.hospital {
+    background-color: #34C759; /* Emerald Green */
+  }
+  
+  .marker.petrol-pump {
+    background-color: #6C7A89; /* Slate Blue */
+  }
+  
+  /* Emergency Breakdown Button */
+  .emergency-section {
+    text-align: center;
+    margin-bottom: 30px;
+  }
+  
+  .emergency-button {
+    background-color: #2EBAC1; /* Teal */
+    color: #F5F5F5;
+    border: none;
+    padding: 15px 30px;
+    font-size: 1.2rem;
+    border-radius: 5px;
+    cursor: pointer;
+  }
+  
+  .emergency-button:hover {
+    background-color: #259da3;
+  }
+  
+  /* Quick Access Buttons */
+  .quick-access {
+    text-align: center;
+  }
+  
+  .button-group {
+    display: flex;
+    justify-content: center;
+    gap: 10px;
+  }
+  
+  .quick-button {
+    background-color: #6C7A89; /* Slate Blue */
+    color: #F5F5F5;
+    border: none;
+    padding: 10px 20px;
+    font-size: 1rem;
+    border-radius: 5px;
+    cursor: pointer;
+  }
+  
+  .quick-button:hover {
+    background-color: #5a6774;
+  }
+  
+  /* Footer */
+  footer {
+    text-align: center;
+    padding: 10px;
+    background-color: #1E1E1E; /* Charcoal Gray */
+    color: #CCCCCC; /* Light Gray */
+    position: fixed;
+    bottom: 0;
+    width: 100%;
+  }

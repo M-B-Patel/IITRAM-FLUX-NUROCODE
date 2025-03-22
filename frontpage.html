@@ -1,0 +1,81 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Roadside Assistance App</title>
+  <link rel="stylesheet" href="styles.css">
+  <!-- Mapbox GL JS -->
+  <link href="https://api.mapbox.com/mapbox-gl-js/v2.10.0/mapbox-gl.css" rel="stylesheet">
+  <script src="https://api.mapbox.com/mapbox-gl-js/v2.10.0/mapbox-gl.js"></script>
+</head>
+<body>
+  <!-- Header -->
+  <header>
+    <h1>Roadside Assistance</h1>
+    <p>Your safety is our priority</p>
+  </header>
+
+  <!-- Main Content -->
+  <main>
+    <!-- SOS Button -->
+    <section class="sos-section">
+      <button class="sos-button">SOS</button>
+      <p>Press in case of emergency</p>
+    </section>
+
+    <!-- Map Section -->
+    <section class="map-section">
+      <h2>Nearby Help</h2>
+      <div id="map"></div>
+    </section>
+
+    <!-- Emergency Breakdown Button -->
+    <section class="emergency-section">
+      <button class="emergency-button" onclick="window.location.href='breakdown.html'">Emergency Breakdown</button>
+      <p>Report a breakdown and get assistance</p>
+    </section>
+
+    <!-- Quick Access Buttons -->
+    <section class="quick-access">
+      <h2>Quick Access</h2>
+      <div class="button-group">
+        <button class="quick-button">Call Mechanic</button>
+        <button class="quick-button">Find Petrol Pump</button>
+        <button class="quick-button">Nearest Hospital</button>
+      </div>
+    </section>
+  </main>
+
+  <!-- Footer -->
+  <footer>
+    <p>&copy; 2023 Roadside Assistance App. All rights reserved.</p>
+  </footer>
+
+  <!-- Mapbox Script -->
+  <script>
+    mapboxgl.accessToken = 'YOUR_MAPBOX_ACCESS_TOKEN'; // Replace with your Mapbox token
+    const map = new mapboxgl.Map({
+      container: 'map',
+      style: 'mapbox://styles/mapbox/dark-v10', // Dark theme map
+      center: [77.5946, 12.9716], // Default center (e.g., Bangalore)
+      zoom: 12
+    });
+
+    // Add markers for nearby locations (example)
+    const locations = [
+      { type: 'mechanic', coordinates: [77.5946, 12.9716] },
+      { type: 'hospital', coordinates: [77.5846, 12.9816] },
+      { type: 'petrol-pump', coordinates: [77.6046, 12.9616] }
+    ];
+
+    locations.forEach(location => {
+      const marker = document.createElement('div');
+      marker.className = `marker ${location.type}`;
+      new mapboxgl.Marker(marker)
+        .setLngLat(location.coordinates)
+        .addTo(map);
+    });
+  </script>
+</body>
+</html>
