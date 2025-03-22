@@ -1,0 +1,122 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Location Finder</title>
+    
+    <!-- Leaflet CSS -->
+    <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css" />
+
+    <!-- Mapbox API -->
+    <script src="https://api.mapbox.com/mapbox-gl-js/v2.9.1/mapbox-gl.js"></script>
+
+    <!-- Custom Styles -->
+    <style>
+        /* Theme Colors */
+        :root {
+            --bg-main: #1E1E1E;
+            --bg-contrast: #252525;
+            --text-primary: #EAEAEA;
+            --text-secondary: #B0B0B0;
+            --highlight-blue: #00A8E8;
+            --highlight-orange: #FF8C42;
+            --highlight-cyan: #57C7E3;
+        }
+
+        /* Page Styles */
+        body {
+            margin: 0;
+            font-family: Arial, sans-serif;
+            background-color: var(--bg-main);
+            color: var(--text-primary);
+            display: flex;
+            height: 100vh;
+        }
+
+        /* Map Container */
+        #map {
+            flex: 2;
+            height: 100vh;
+        }
+
+        /* Sidebar for Details */
+        #info {
+            flex: 1;
+            padding: 20px;
+            background: var(--bg-contrast);
+            border-left: 3px solid var(--highlight-blue);
+            overflow-y: auto;
+        }
+
+        h2 {
+            color: var(--highlight-blue);
+        }
+
+        p {
+            color: var(--text-secondary);
+        }
+
+        .highlight {
+            color: var(--highlight-orange);
+            font-weight: bold;
+        }
+    </style>
+</head>
+<body>
+
+    <!-- Map Container -->
+    <div id="map"></div>
+
+    <!-- Sidebar for Info -->
+    <div id="info">
+        <h2>Click a Location</h2>
+        <p>Select a marker on the map to see details.</p>
+    </div>
+
+    <!-- Leaflet JS -->
+    <script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"></script>
+
+    <script>
+        // Sample Data (Stored Internally, Replace Later with Server Data)
+        const locations = [
+            { type: "hospital", name: "City Hospital", lat: 22.3072, lng: 73.1812, details: "24/7 Emergency, Cardiology, Neurology" },
+            { type: "hospital", name: "Sunshine Clinic", lat: 22.3172, lng: 73.1912, details: "Pediatrics, Dental Care, Orthopedics" },
+            { type: "mechanic", name: "Speedy Auto Repair", lat: 22.3050, lng: 73.1750, details: "Engine Repair, Tire Change, Oil Service" },
+            { type: "mechanic", name: "Quick Fix Garage", lat: 22.3105, lng: 73.1850, details: "Brake Service, Electrical Repair" },
+            { type: "petrol", name: "Super Fuel Station", lat: 22.3150, lng: 73.1950, details: "Petrol, Diesel, CNG" },
+            { type: "petrol", name: "Eco Gas Station", lat: 22.3200, lng: 73.2000, details: "CNG, Electric Charging" }
+        ];
+
+        // Initialize Map
+        const map = L.map('map').setView([22.3072, 73.1812], 13);
+
+        // Mapbox Tile Layer
+        L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
+            attribution: '&copy; OpenStreetMap contributors'
+        }).addTo(map);
+
+        // Icons for Different Locations
+        const icons = {
+            hospital: L.icon({ iconUrl: 'https://cdn-icons-png.flaticon.com/512/883/883768.png', iconSize: [30, 30] }),
+            mechanic: L.icon({ iconUrl: 'https://cdn-icons-png.flaticon.com/512/1052/1052934.png', iconSize: [30, 30] }),
+            petrol: L.icon({ iconUrl: 'https://cdn-icons-png.flaticon.com/512/633/633647.png', iconSize: [30, 30] })
+        };
+
+        // Add Markers to Map
+        locations.forEach(loc => {
+            const marker = L.marker([loc.lat, loc.lng], { icon: icons[loc.type] }).addTo(map);
+
+            // Click Event for Sidebar Info
+            marker.on('click', () => {
+                document.getElementById('info').innerHTML = `
+                    <h2>${loc.name}</h2>
+                    <p class="highlight">${loc.type.toUpperCase()}</p>
+                    <p>${loc.details}</p>
+                `;
+            });
+        });
+    </script>
+
+</body>
+</html>
