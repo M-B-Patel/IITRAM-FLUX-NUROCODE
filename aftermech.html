@@ -1,0 +1,151 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Roadside Assistance Hub</title>
+    <style>
+:root {
+    --bg-main: #F4F1EB; /* Warm off-white for a softer look */
+    --bg-contrast: #FFFFFF; /* White for contrast sections */
+    --text-primary: #333333; /* Dark gray for readability */
+    --text-secondary: #666666; /* Soft gray for secondary text */
+    --highlight-blue: #4682B4; /* Muted steel blue for links & buttons */
+    --highlight-orange: #E07B39; /* Warm earthy orange for CTAs */
+    --highlight-cyan: #5DA3A8; /* Gentle cyan for soft highlights */
+}
+
+
+        body {
+            margin: 0;
+            font-family: 'Segoe UI', system-ui;
+            background-color: var(--bg-main);
+            color: var(--text-primary);
+            min-height: 100vh;
+        }
+
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 2rem;
+        }
+
+        .header {
+            text-align: center;
+            margin-bottom: 3rem;
+            padding: 2rem 0;
+            border-bottom: 2px solid var(--highlight-blue);
+        }
+
+        .services-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+            gap: 2rem;
+        }
+
+        .service-card {
+            background: var(--bg-contrast);
+            padding: 2rem;
+            border-radius: 8px;
+            transition: transform 0.3s ease;
+        }
+
+        .service-card:hover {
+            transform: translateY(-5px);
+        }
+
+        .service-icon {
+            font-size: 2.5rem;
+            margin-bottom: 1rem;
+        }
+
+        .service-title {
+            font-size: 1.5rem;
+            margin-bottom: 1rem;
+        }
+
+        .service-description {
+            color: var(--text-secondary);
+            margin-bottom: 1.5rem;
+        }
+
+        .action-btn {
+            display: inline-block;
+            padding: 0.8rem 1.5rem;
+            border-radius: 4px;
+            text-decoration: none;
+            font-weight: 600;
+            transition: all 0.3s ease;
+        }
+
+        .mechanic-btn {
+            background: var(--highlight-orange);
+            color: var(--text-primary);
+        }
+
+        .recovery-btn {
+            background: var(--highlight-blue);
+            color: var(--text-primary);
+        }
+
+        .community-btn {
+            background: var(--highlight-cyan);
+            color: var(--text-primary);
+        }
+
+        .action-btn:hover {
+            filter: brightness(1.1);
+            box-shadow: 0 4px 15px rgba(0,0,0,0.2);
+        }
+
+        @media (max-width: 768px) {
+            .services-grid {
+                grid-template-columns: 1fr;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <header class="header">
+            <h1>Emergency Roadside Services</h1>
+            <p class="service-description">Immediate assistance when you need it most</p>
+        </header>
+
+        <div class="services-grid">
+            <!-- Mechanic Assistance -->
+            <div class="service-card">
+                <div class="service-icon">🔧</div>
+                <h2 class="service-title">Request Roadside Assistance</h2>
+                <p class="service-description">
+                    Connect with certified mechanics for immediate vehicle repairs 
+                    and emergency roadside services.
+                </p>
+                <a href="soon.html" class="action-btn mechanic-btn">Call Professional Help</a>
+            </div>
+
+            <!-- Vehicle Recovery -->
+            <div class="service-card">
+                <div class="service-icon">🚗</div>
+                <h2 class="service-title">Vehicle Recovery Service</h2>
+                <p class="service-description">
+                    Need your vehicle transported? Our certified towing partners 
+                    are available 24/7.
+                </p>
+                <a href="soon.html" class="action-btn recovery-btn">Arrange Transport</a>
+            </div>
+
+            <!-- Community Help -->
+            <div class="service-card">
+                <div class="service-icon">👥</div>
+                <h2 class="service-title">Community Support Network</h2>
+                <p class="service-description">
+                    Connect with nearby volunteers and community members 
+                    for immediate assistance.
+                </p>
+                <a href="soon.html" class="action-btn community-btn">Request Local Help</a>
+            </div>
+        </div>
+    </div>
+</body>
+</html>

@@ -23,7 +23,30 @@
             animation: gradientBG 10s ease infinite;
             color: white;
             padding: 2rem;
+        }
+
+        .header-content {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            flex-wrap: wrap;
+        }
+
+        .nav-links {
+            display: flex;
+            gap: 1rem; /* Space between links */
+            margin-left: auto; /* Align to the right */
+        }
+
+        .nav-link {
+            text-decoration: none;
+            color: white;
+            font-weight: bold;
+        }
+
+        .header-text {
             text-align: center;
+            flex-grow: 1; /* Allows the content to expand */
         }
 
         @keyframes gradientBG {
@@ -115,53 +138,55 @@
     </style>
 </head>
 <body>
+
     <header class="header">
-        <h1>Emergency Vehicle Assistance</h1>
-        <p>24/7 Support for Your Vehicle Emergencies</p>
+        <div class="header-content">
+            <div class="header-text">
+                <h1>Emergency Vehicle Assistance</h1>
+                <p>24/7 Support for Your Vehicle Emergencies</p>
+            </div>
+            <nav class="nav-links">
+                <a class="nav-link" href="dark_light.html">Home</a> |
+                <a class="nav-link" href="contact.html">Contact Us</a>
+            </nav>
+        </div>
     </header>
 
     <main>
         <div class="options-grid">
             <div class="option-card">
                 <h2>Contact a Mechanic</h2>
-                <button class="ripple-button" onclick="toggleDropdown('mechanic')">Request Assistance</button>
-                <div id="mechanic" class="dropdown-content">
-                    <p>Nearest mechanics: Loading...</p>
-                    <p>Emergency number: 1-800-MECHANIC</p>
+                <button class="ripple-button" onclick="location.href='vidcall.html'">Request Assistance</button>
+                <div id="mechanic" >
                 </div>
             </div>
 
             <div class="option-card">
-                <h2>Ran Out of Fuel</h2>
-                <button class="ripple-button" onclick="toggleDropdown('fuel')">Find Fuel Stations</button>
-                <div id="fuel" class="dropdown-content">
-                    <p>Nearest fuel stations: Loading...</p>
-                    <p>Emergency delivery available</p>
+                <h2>Ran Out of Fuelㅤ</h2>
+                <button class="ripple-button" onclick="location.href='soon.html'">Find Fuel Stations</button>
+                <div id="fuel" >
                 </div>
             </div>
 
             <div class="option-card">
                 <h2>Tow Car</h2>
-                <button class="ripple-button" onclick="toggleDropdown('tow')">Arrange Towing</button>
-                <div id="tow" class="dropdown-content">
-                    <p>Nearest towing services: Loading...</p>
-                    <p>24/7 towing available</p>
+                <button class="ripple-button" onclick="location.href='soon.html'">Arrange Towing</button>
+                <div id="tow">
                 </div>
             </div>
 
             <div class="option-card">
                 <h2>Car Pull</h2>
-                <button class="ripple-button" onclick="toggleDropdown('pull')">Request Assistance</button>
-                <div id="pull" class="dropdown-content">
-                    <p>Nearest assistance: Loading...</p>
-                    <p>Roadside help available</p>
+                <button class="ripple-button" onclick="location.href='soon.html'">Request Assistance</button>
+                <div id="pull" >
                 </div>
             </div>
         </div>
+        
     </main>
 
     <footer>
-        <p>© 2023 Emergency Vehicle Assistance. All rights reserved.</p>
+        <p>© <span id="year"></span> Emergency Vehicle Assistance. All rights reserved.</p>
     </footer>
 
     <script>
@@ -170,7 +195,6 @@
             dropdown.classList.toggle('active');
         }
 
-        // Ripple effect for buttons
         document.querySelectorAll('.ripple-button').forEach(button => {
             button.addEventListener('click', function(e) {
                 const ripple = document.createElement('div');
@@ -181,6 +205,9 @@
                 setTimeout(() => ripple.remove(), 600);
             });
         });
+
+        document.getElementById('year').textContent = new Date().getFullYear();
     </script>
+
 </body>
 </html>

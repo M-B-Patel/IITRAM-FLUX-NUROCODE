@@ -1,0 +1,347 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Emergency Services Finder</title>
+    <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css" />
+    <style>
+        :root {
+    --bg-main: #f5f5f5;         /* Light grey background */
+    --bg-contrast: #fafafa;     /* Off-white contrast */
+    --text-primary: #333333;    /* Dark grey text */
+    --text-secondary: #666666;  /* Medium grey */
+    --highlight-blue: #6c7a89;  /* Muted slate blue */
+    --highlight-orange: #d4a373;/* Muted terracotta */
+    --highlight-cyan: #6d9b9b;  /* Dusty teal */
+}
+
+
+        body {
+            margin: 0;
+            font-family: 'Segoe UI', system-ui, sans-serif;
+            background-color: var(--bg-main);
+            color: var(--text-primary);
+            height: 100vh;
+            overflow: hidden;
+        }
+
+        #map {
+            width: 100%;
+            height: 100vh;
+            transition: filter 0.3s ease;
+        }
+
+        /* Added Button Styles */
+        .filter-buttons {
+            position: fixed;
+            top: 20px;
+            right: 20px;
+            display: flex;
+            gap: 15px;
+            z-index: 1000;
+        }
+
+        .filter-btn {
+            padding: 1em 2em;
+            border: none;
+            border-radius: 5px;
+            font-weight: bold;
+            letter-spacing: 2px;
+            text-transform: uppercase;
+            transition: all 500ms;
+            font-size: 14px;
+            position: relative;
+            overflow: hidden;
+            outline: 2px solid;
+            cursor: pointer;
+            background: var(--bg-contrast);
+        }
+
+        .filter-btn[data-filter="hospital"] {
+            color: var(--highlight-blue);
+            outline-color: var(--highlight-blue);
+        }
+
+        .filter-btn[data-filter="mechanic"] {
+            color: var(--highlight-orange);
+            outline-color: var(--highlight-orange);
+        }
+
+        .filter-btn[data-filter="petrol"] {
+            color: var(--highlight-cyan);
+            outline-color: var(--highlight-cyan);
+        }
+
+        .filter-btn:hover {
+            color: var(--text-primary);
+            transform: scale(1.05);
+            box-shadow: 2px 3px 10px -2px;
+        }
+
+        .filter-btn:hover::before {
+            width: 200%;
+        }
+
+        .back-btn {
+            display: flex;
+            height: 3em;
+            width: 100px;
+            align-items: center;
+            justify-content: center;
+            border-radius: 3px;
+            letter-spacing: 1px;
+            transition: all 0.2s linear;
+            cursor: pointer;
+            position: fixed;
+            top: 20px;
+            left: 20px;
+            z-index: 1000;
+            color: var(--text-primary);
+            background: var(--bg-contrast);
+            box-shadow: 0 4px 12px rgba(0,0,0,0.2);
+            border: none;
+            text-decoration: none;
+        }
+
+        .back-btn:hover {
+            box-shadow: 9px 9px 33px rgba(0,0,0,0.2);
+            transform: translateY(-2px);
+        }
+
+        .back-btn svg {
+            margin-right: 5px;
+            transition: all 0.4s ease-in;
+            fill: var(--text-primary);
+        }
+
+        .back-btn:hover svg {
+            transform: translateX(-5px);
+        }
+
+        /* Existing styles remain unchanged */
+        .sidebar {
+            position: fixed;
+            top: 0;
+            right: -400px;
+            width: 400px;
+            height: 100vh;
+            background: var(--bg-contrast);
+            box-shadow: -4px 0 20px rgba(0,0,0,0.3);
+            transition: right 0.4s cubic-bezier(0.4, 0, 0.2, 1);
+            padding: 24px;
+            overflow-y: auto;
+            z-index: 1000;
+        }
+
+        .sidebar.active {
+            right: 0;
+        }
+
+        .sidebar-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 32px;
+        }
+
+        .close-btn {
+            background: none;
+            border: none;
+            color: var(--text-secondary);
+            font-size: 24px;
+            cursor: pointer;
+            transition: color 0.2s ease;
+        }
+
+        .close-btn:hover {
+            color: var(--text-primary);
+        }
+
+        .location-card {
+            background: var(--bg-main);
+            border-radius: 12px;
+            padding: 20px;
+            margin-bottom: 16px;
+            opacity: 0;
+            transform: translateX(20px);
+            transition: all 0.3s ease;
+        }
+
+        .location-card.visible {
+            opacity: 1;
+            transform: translateX(0);
+        }
+
+        .leaflet-marker-icon {
+            transition: transform 0.2s ease;
+        }
+
+        .leaflet-marker-icon.clicked {
+            animation: markerBounce 0.4s ease;
+        }
+
+        @keyframes markerBounce {
+            0%, 100% { transform: scale(1); }
+            50% { transform: scale(1.2); }
+        }
+    </style>
+</head>
+<body>
+    <!-- Added Buttons -->
+    <a href="dark_light.html" class="back-btn">
+        <svg height="16" width="16" viewBox="0 0 1024 1024">
+            <path d="M874.690416 495.52477c0 11.2973-9.168824 20.466124-20.466124 20.466124l-604.773963 0 188.083679 188.083679c7.992021 7.992021 7.992021 20.947078 0 28.939099-4.001127 3.990894-9.240455 5.996574-14.46955 5.996574-5.239328 0-10.478655-1.995447-14.479783-5.996574l-223.00912-223.00912c-3.837398-3.837398-5.996574-9.046027-5.996574-14.46955 0-5.433756 2.159176-10.632151 5.996574-14.46955l223.019353-223.029586c7.992021-7.992021 20.957311-7.992021 28.949332 0 7.992021 8.002254 7.992021 20.957311 0 28.949332l-188.073446 188.073446 604.753497 0C865.521592 475.058646 874.690416 484.217237 874.690416 495.52477z"></path>
+        </svg>
+        <span>Back</span>
+    </a>
+
+    <div class="filter-buttons">
+        <button class="filter-btn" data-filter="hospital">Hospitals</button>
+        <button class="filter-btn" data-filter="mechanic">Mechanics</button>
+        <button class="filter-btn" data-filter="petrol">Petrol Pumps</button>
+    </div>
+
+    <div id="map"></div>
+
+    <div class="sidebar">
+        <div class="sidebar-header">
+            <h2>Location Details</h2>
+            <button class="close-btn" onclick="toggleSidebar()">×</button>
+        </div>
+        <div id="location-details"></div>
+    </div>
+
+    <script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"></script>
+    <script>
+        // Initialize Map
+        const map = L.map('map').setView([22.3072, 73.1812], 13);
+        L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
+            attribution: '© OpenStreetMap contributors'
+        }).addTo(map);
+
+        // Sample Data
+        const locations = [
+    {   type: 'hospital', name: 'City General Hospital', position: [22.3201, 73.1912],
+        details: { facilities: ['Emergency', 'ICU', 'Surgery', 'Pharmacy'], contact: '+91 123 456 7890' }, color: '#00A8E8' },
+    {   type: 'mechanic', name: 'Auto Care Center', position: [22.3056, 73.1752],
+        details: { specialization: ['Engine Repair', 'AC Service', 'Brake System'], hours: '8 AM - 8 PM' }, color: '#FF8C42' },
+    {   type: 'petrol', name: 'Shell Fuel Station', position: [22.3124, 73.1689],
+        details: { fuels: ['Petrol', 'Diesel', 'CNG'], services: ['24/7 Service', 'ATM', 'Convenience Store'] }, color: '#57C7E3' },
+    
+    // Additional 150 randomized locations centered around 22.3072° N, 73.1812° E
+    ...Array.from({ length: 150 }, (_, i) => {
+        const types = ['hospital', 'mechanic', 'petrol'];
+        const type = types[Math.floor(Math.random() * types.length)];
+        const names = {
+            hospital: ['Sunrise Hospital', 'Lotus Multi-Specialty', 'Green Cross Clinic', 'City Care Center', 'Apollo Medics'],
+            mechanic: ['Speed Auto Garage', 'Elite Car Repairs', 'Raj Motors', 'QuickFix Garage', 'Tech Auto Services'],
+            petrol: ['HP Petrol Pump', 'Indian Oil Station', 'Reliance Fuel Stop', 'Nayara Energy', 'Bharat Petroleum']
+        };
+        const baseLat = 22.3072;
+        const baseLng = 73.1812;
+        return {
+            type,
+            name: names[type][Math.floor(Math.random() * names[type].length)] + ` ${i + 1}`,
+            position: [baseLat + (Math.random() - 0.5) * 0.7    , baseLng + (Math.random() - 0.5) * 0.7],
+            details: type === 'hospital' 
+                ? { facilities: ['ER', 'Pharmacy', 'Cardiology'], contact: `+91 99999${i}` }
+                : type === 'mechanic' 
+                    ? { specialization: ['Tire Repair', 'Battery Change'], hours: '9 AM - 9 PM' }
+                    : { fuels: ['Petrol', 'Diesel', 'CNG'], services: ['24/7 Service', 'Car Wash', 'ATM'] },
+            color: type === 'hospital' ? '#00A8E8' : type === 'mechanic' ? '#FF8C42' : '#57C7E3'
+        };
+    })
+];
+
+
+
+
+        // Create Markers
+        const markers = {
+            hospital: [],
+            mechanic: [],
+            petrol: []
+        };
+
+        locations.forEach(location => {
+            const marker = L.marker(location.position, {
+                icon: L.divIcon({
+                    className: 'custom-marker',
+                    html: `<div style="
+                        background: ${location.color};
+                        width: 36px;
+                        height: 36px;
+                        border-radius: 50%;
+                        display: flex;
+                        align-items: center;
+                        justify-content: center;
+                        color: var(--text-primary);
+                        font-weight: bold;
+                        box-shadow: 0 4px 12px rgba(0,0,0,0.3);
+                    ">${location.type[0].toUpperCase()}</div>`
+                })
+            }).addTo(map);
+            
+            markers[location.type].push(marker);
+
+            marker.on('click', (e) => {
+                e.target._icon.classList.add('clicked');
+                setTimeout(() => {
+                    e.target._icon.classList.remove('clicked');
+                }, 400);
+                showLocationDetails(location);
+                toggleSidebar(true);
+            });
+        });
+
+        // Filter functionality
+        document.querySelectorAll('.filter-btn').forEach(button => {
+            button.addEventListener('click', () => {
+                const filter = button.dataset.filter;
+                markers[filter].forEach(marker => {
+                    map.hasLayer(marker) ? marker.remove() : marker.addTo(map);
+                });
+                button.classList.toggle('active');
+            });
+        });
+
+        // Existing functions remain unchanged
+        function showLocationDetails(location) {
+            const detailsContainer = document.getElementById('location-details');
+            let detailsHtml = `
+                <div class="location-card">
+                    <h3 style="color: ${location.color}; margin-top: 0;">
+                        ${location.name}
+                    </h3>`;
+
+            for (const [key, value] of Object.entries(location.details)) {
+                detailsHtml += `
+                    <p><strong>${key.charAt(0).toUpperCase() + key.slice(1)}:</strong><br>
+                    ${Array.isArray(value) ? value.join(', ') : value}</p>`;
+            }
+
+            detailsContainer.innerHTML = detailsHtml + '</div>';
+            
+            setTimeout(() => {
+                document.querySelector('.location-card').classList.add('visible');
+            }, 50);
+        }
+
+        function toggleSidebar(forceOpen) {
+            const sidebar = document.querySelector('.sidebar');
+            const mapEl = document.getElementById('map');
+            
+            if (forceOpen) {
+                sidebar.classList.add('active');
+                mapEl.style.filter = 'brightness(0.7)';
+            } else {
+                sidebar.classList.toggle('active');
+                mapEl.style.filter = sidebar.classList.contains('active') 
+                    ? 'brightness(0.7)' 
+                    : 'none';
+            }
+        }
+    </script>
+</body>
+</html>

@@ -1,0 +1,167 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Help is On The Way</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            background: linear-gradient(-45deg, #40B3A2, #2c568d, #66BB6A);
+            background-size: 400% 400%;
+            animation: gradientFlow 15s ease infinite;
+            height: 100vh;
+            overflow: hidden;
+            font-family: 'Helvetica Neue', sans-serif;
+        }
+
+        .container {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            height: 100vh;
+            color: white;
+            text-align: center;
+            padding: 20px;
+        }
+
+        .reassurance-text {
+            font-size: 3.5rem;
+            margin-bottom: 1.5rem;
+            text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.3);
+            animation: fadeInOut 2.5s ease-in-out infinite;
+        }
+
+        .status-message {
+            font-size: 1.5rem;
+            margin-bottom: 2rem;
+            opacity: 0.9;
+        }
+
+        .progress-container {
+            width: 300px;
+            height: 4px;
+            background: rgba(255, 255, 255, 0.2);
+            border-radius: 2px;
+            margin: 20px 0;
+        }
+
+        .progress-bar {
+            height: 100%;
+            background: white;
+            width: 0;
+            transition: width 2s ease;
+            border-radius: 2px;
+        }
+
+        .floating-circle {
+            position: absolute;
+            border-radius: 50%;
+            background: rgba(255, 255, 255, 0.1);
+            animation: float 20s infinite linear;
+        }
+
+        .pulse-dot {
+            width: 20px;
+            height: 20px;
+            background: #fff;
+            border-radius: 50%;
+            animation: pulse 2s infinite;
+            margin-top: 40px;
+        }
+
+        @keyframes gradientFlow {
+            0% { background-position: 0% 50%; }
+            50% { background-position: 100% 50%; }
+            100% { background-position: 0% 50%; }
+        }
+
+        @keyframes fadeInOut {
+            0%, 100% { opacity: 0.8; transform: translateY(-5px); }
+            50% { opacity: 1; transform: translateY(0); }
+        }
+
+        @keyframes float {
+            from { transform: translateY(100vh) scale(0.5); }
+            to { transform: translateY(-100vh) scale(1.2); }
+        }
+
+        @keyframes pulse {
+            0% { transform: scale(0.8); opacity: 0.7; }
+            50% { transform: scale(1.2); opacity: 1; }
+            100% { transform: scale(0.8); opacity: 0.7; }
+        }
+
+        .contact-info {
+            position: absolute;
+            bottom: 30px;
+            font-size: 1.1rem;
+            opacity: 0.9;
+        }
+
+        @media (max-width: 768px) {
+            .reassurance-text {
+                font-size: 2.5rem;
+            }
+            .status-message {
+                font-size: 1.2rem;
+            }
+        }
+    </style>
+</head>
+<body>
+    <!-- Floating background elements -->
+    <div class="floating-circle" style="left: 10%; width: 120px; height: 120px; animation-delay: -2s;"></div>
+    <div class="floating-circle" style="left: 30%; width: 80px; height: 80px; animation-delay: -5s;"></div>
+    <div class="floating-circle" style="left: 70%; width: 150px; height: 150px; animation-delay: -7s;"></div>
+    <div class="floating-circle" style="left: 90%; width: 100px; height: 100px; animation-delay: -10s;"></div>
+
+    <div class="container">
+        <h1 class="reassurance-text">Help Will Arrive Soon</h1>
+        <p class="status-message">Our team is currently navigating to your location</p>
+        
+        <div class="progress-container">
+            <div class="progress-bar" id="progressBar"></div>
+        </div>
+
+        <p class="status-message" id="dynamicText">Initializing route optimization...</p>
+        <div class="pulse-dot"></div>
+
+        <div class="contact-info">
+            <p>Stay calm - Assistance is approaching</p>
+            <p>Emergency Contact: 1-800-HELP-NOW</p>
+        </div>
+    </div>
+
+    <script>
+        // Simulated progress animation
+        let progress = 0;
+        const progressBar = document.getElementById('progressBar');
+        const textElement = document.getElementById('dynamicText');
+        const messages = [
+            "Optimizing travel route...",
+            "Confirming nearest available unit...",
+            "Bypassing traffic patterns...",
+            "Approaching your location...",
+            "Finalizing arrival details..."
+        ];
+
+        setInterval(() => {
+            progress = Math.min(progress + Math.random() * 10, 100);
+            progressBar.style.width = `${progress}%`;
+            
+            if(progress < 100) {
+                textElement.textContent = messages[Math.floor(Math.random() * messages.length)];
+            } else {
+                textElement.textContent = "Assistance has arrived!";
+            }
+        }, 2500);
+    </script>
+</body>
+</html>

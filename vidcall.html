@@ -1,0 +1,172 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Video Call & Chat</title>
+    <style>
+        body {
+            background-color: #151716;
+            color: #F7F7F7;
+            text-align: center;
+            font-family: Arial, sans-serif;
+        }
+        #video-grid {
+            display: flex;
+            justify-content: center;
+            gap: 10px;
+            margin-top: 20px;
+        }
+        video {
+            width: 45%;
+            border-radius: 10px;
+            border: 2px solid #4B001E;
+        }
+        #chat-box {
+            margin-top: 20px;
+            background: #686C6D;
+            padding: 10px;
+            border-radius: 10px;
+        }
+        input, button {
+            margin-top: 5px;
+            padding: 8px;
+            border-radius: 5px;
+            border: none;
+        }
+        #call-controls {
+            margin: 20px 0;
+        }
+    </style>
+</head>
+<body>
+    <h1>Video Call & Chat</h1>
+    <div id="video-grid">
+        <video id="localVideo" autoplay muted></video>
+        <video id="remoteVideo" autoplay></video>
+    </div>
+    <div id="call-controls">
+        <button onclick="startCall()">Start Call</button>
+        <button style="background-color: #ff4444;">
+            <a href="aftermech.html" style="color: inherit; text-decoration: none;">End Call</a>
+        </button>
+    </div>
+    
+    
+    <div id="chat-box">
+        <h3>Chat</h3>
+        <div id="messages"></div>
+        <input type="text" id="messageInput" placeholder="Type a message">
+        <button onclick="sendMessage()">Send</button>
+    </div>
+    
+    <script>
+        const socket = new WebSocket('wss://yourserver.com'); // Replace with actual WebSocket server
+        let peer = null;
+        const localVideo = document.getElementById('localVideo');
+        const remoteVideo = document.getElementById('remoteVideo');
+        let localStream = null;
+
+        async function initializeMedia() {
+            try {
+                localStream = await navigator.mediaDevices.getUserMedia({ 
+                    video: true, 
+                    audio: true 
+                });
+                localVideo.srcObject = localStream;
+            } catch (error) {
+                console.error('Error accessing media devices:', error);
+            }
+        }
+
+        function startCall() {
+            peer = new RTCPeerConnection();
+            
+            // Add local tracks to connection
+            localStream.getTracks().forEach(track => {
+                peer.addTrack(track, localStream);
+            });
+
+            // Set up remote video
+            peer.ontrack = event => {
+                remoteVideo.srcObject = event.streams[0];
+            };
+
+            // Create and send offer
+            peer.createOffer()
+                .then(offer => peer.setLocalDescription(offer))
+                .then(() => {
+                    socket.send(JSON.stringify({ 
+                        type: 'offer', 
+                        offer: peer.localDescription 
+                    }));
+                })
+                .catch(error => console.error('Error starting call:', error));
+        }
+
+        function endCall() {
+            if (peer) {
+                peer.close();
+                peer = null;
+            }
+            
+            // Stop all media tracks
+            if (localStream) {
+                localStream.getTracks().forEach(track => track.stop());
+            }
+            
+            // Reset video elements
+            localVideo.srcObject = null;
+            remoteVideo.srcObject = null;
+            
+            // Send hangup notification
+            socket.send(JSON.stringify({ type: 'hangup' }));
+            
+            // Re-initialize media for future calls
+            initializeMedia();
+        }
+
+        socket.onmessage = async event => {
+            const message = JSON.parse(event.data);
+            
+            if (message.type === 'offer') {
+                if (!peer) {
+                    peer = new RTCPeerConnection();
+                    peer.ontrack = event => {
+                        remoteVideo.srcObject = event.streams[0];
+                    };
+                }
+                
+                await peer.setRemoteDescription(new RTCSessionDescription(message.offer));
+                const answer = await peer.createAnswer();
+                await peer.setLocalDescription(answer);
+                socket.send(JSON.stringify({ type: 'answer', answer }));
+                
+            } else if (message.type === 'answer') {
+                await peer.setRemoteDescription(new RTCSessionDescription(message.answer));
+                
+            } else if (message.type === 'hangup') {
+                endCall();
+                
+            } else if (message.type === 'chat') {
+                document.getElementById('messages').innerHTML += `<p>Stranger: ${message.message}</p>`;
+            }
+        };
+
+        function sendMessage() {
+            const input = document.getElementById('messageInput');
+            if (input.value.trim()) {
+                socket.send(JSON.stringify({ 
+                    type: 'chat', 
+                    message: input.value 
+                }));
+                document.getElementById('messages').innerHTML += `<p>You: ${input.value}</p>`;
+                input.value = '';
+            }
+        }
+
+        // Initialize media on page load
+        initializeMedia();
+    </script>
+</body>
+</html>
